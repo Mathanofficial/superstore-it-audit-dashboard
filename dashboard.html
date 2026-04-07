@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuperStore IT Audit & Sales Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;min-height:100vh}
+  header{background:linear-gradient(135deg,#1a3c6e,#2563b0);color:#fff;padding:18px 32px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.18)}
+  header h1{font-size:22px;font-weight:700;letter-spacing:0.5px}
+  header .subtitle{font-size:13px;opacity:0.8;margin-top:3px}
+  header .badge{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:20px;padding:5px 16px;font-size:12px;font-weight:600}
+  .container{max-width:1400px;margin:0 auto;padding:24px 20px}
+  .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+  .kpi{background:#fff;border-radius:10px;padding:20px 22px;box-shadow:0 1px 4px rgba(0,0,0,0.08);border-left:5px solid #2563b0;position:relative;overflow:hidden}
+  .kpi.green{border-left-color:#16a34a}
+  .kpi.amber{border-left-color:#d97706}
+  .kpi.red{border-left-color:#dc2626}
+  .kpi-label{font-size:12px;color:#666;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px}
+  .kpi-value{font-size:28px;font-weight:700;color:#1a1a1a}
+  .kpi-sub{font-size:12px;color:#888;margin-top:4px}
+  .kpi-icon{position:absolute;right:18px;top:50%;transform:translateY(-50%);font-size:36px;opacity:0.12}
+  .charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+  .charts-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+  .card{background:#fff;border-radius:10px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+  .card h3{font-size:14px;font-weight:700;color:#333;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid #f0f2f5;display:flex;align-items:center;gap:8px}
+  .card h3 .tag{font-size:10px;background:#e8f0fb;color:#2563b0;border-radius:4px;padding:2px 8px;font-weight:600;margin-left:auto}
+  .chart-wrap{position:relative;width:100%}
+  .section-title{font-size:16px;font-weight:700;color:#1a3c6e;margin:8px 0 14px;padding-left:10px;border-left:4px solid #2563b0}
+  .audit-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+  .audit-card{background:#fff;border-radius:10px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+  .audit-card h4{font-size:13px;font-weight:700;color:#333;margin-bottom:12px;border-bottom:1px solid #eee;padding-bottom:8px}
+  .finding{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;padding:10px;border-radius:6px}
+  .finding.critical{background:#fef2f2;border-left:3px solid #dc2626}
+  .finding.high{background:#fff7ed;border-left:3px solid #d97706}
+  .finding.medium{background:#f0fdf4;border-left:3px solid #16a34a}
+  .finding-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;white-space:nowrap;margin-top:1px}
+  .badge-critical{background:#dc2626;color:#fff}
+  .badge-high{background:#d97706;color:#fff}
+  .badge-medium{background:#16a34a;color:#fff}
+  .finding-text{font-size:12px;color:#444;line-height:1.5}
+  .finding-text strong{display:block;font-size:13px;color:#222;margin-bottom:2px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{background:#1a3c6e;color:#fff;padding:9px 12px;text-align:left;font-weight:600;font-size:12px}
+  td{padding:8px 12px;border-bottom:1px solid #f0f2f5;color:#444}
+  tr:hover td{background:#f8f9fb}
+  .status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+  .dot-green{background:#16a34a}
+  .dot-red{background:#dc2626}
+  .dot-amber{background:#d97706}
+  footer{text-align:center;padding:18px;color:#aaa;font-size:12px;margin-top:8px}
+  @media(max-width:900px){.kpi-row{grid-template-columns:1fr 1fr}.charts-row,.charts-row-3,.audit-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🏬 SuperStore — IT Audit & Sales Analytics Dashboard</h1>
+    <div class="subtitle">Data Period: 2011 – 2014 &nbsp;|&nbsp; 51,290 Transactions &nbsp;|&nbsp; 13 Regions &nbsp;|&nbsp; Global Markets</div>
+  </div>
+  <div class="badge">IT Audit Report 2024</div>
+</header>
+
+<div class="container">
+
+  <!-- KPI Cards -->
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="kpi-label">Total Sales</div>
+      <div class="kpi-value">$12.64M</div>
+      <div class="kpi-sub">Across 25,035 orders</div>
+      <div class="kpi-icon">💰</div>
+    </div>
+    <div class="kpi green">
+      <div class="kpi-label">Total Profit</div>
+      <div class="kpi-value">$1.47M</div>
+      <div class="kpi-sub">11.62% profit margin</div>
+      <div class="kpi-icon">📈</div>
+    </div>
+    <div class="kpi amber">
+      <div class="kpi-label">Total Quantity</div>
+      <div class="kpi-value">178,312</div>
+      <div class="kpi-sub">Units sold globally</div>
+      <div class="kpi-icon">📦</div>
+    </div>
+    <div class="kpi red">
+      <div class="kpi-label">High Discount Orders</div>
+      <div class="kpi-value">6,961</div>
+      <div class="kpi-sub">Discount &gt;40% — Risk Flag</div>
+      <div class="kpi-icon">⚠️</div>
+    </div>
+  </div>
+
+  <!-- Sales Performance Section -->
+  <div class="section-title">📊 Sales Performance Analysis</div>
+  <div class="charts-row">
+    <div class="card">
+      <h3>Sales & Profit by Year <span class="tag">Trend</span></h3>
+      <div class="chart-wrap" style="height:240px"><canvas id="yearChart"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>Sales by Category <span class="tag">Breakdown</span></h3>
+      <div class="chart-wrap" style="height:240px"><canvas id="catChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="charts-row-3">
+    <div class="card">
+      <h3>Top 5 Regions by Sales <span class="tag">Regional</span></h3>
+      <div class="chart-wrap" style="height:220px"><canvas id="regionChart"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>Discount Distribution <span class="tag">Audit Risk</span></h3>
+      <div class="chart-wrap" style="height:220px"><canvas id="discountChart"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>Order Priority Mix <span class="tag">Operational</span></h3>
+      <div class="chart-wrap" style="height:220px"><canvas id="priorityChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- IT Audit Section -->
+  <div class="section-title">🔍 IT Audit Findings</div>
+  <div class="audit-grid">
+    <div class="audit-card">
+      <h4>🚨 Audit Findings — Risk Register</h4>
+      <div class="finding critical">
+        <div><span class="finding-badge badge-critical">CRITICAL</span></div>
+        <div class="finding-text">
+          <strong>F-01: Excessive Discount Controls</strong>
+          6,961 orders (13.6%) have discounts above 40%, indicating missing approval workflows and discount ceiling controls in the order management system.
+        </div>
+      </div>
+      <div class="finding high">
+        <div><span class="finding-badge badge-high">HIGH</span></div>
+        <div class="finding-text">
+          <strong>F-02: Data Integrity — Negative Profits</strong>
+          Multiple records show negative profit values (e.g., −$26.05) suggesting no system-level validation preventing loss-making transactions.
+        </div>
+      </div>
+      <div class="finding high">
+        <div><span class="finding-badge badge-high">HIGH</span></div>
+        <div class="finding-text">
+          <strong>F-03: Shipping Cost Anomalies</strong>
+          Inconsistent shipping cost formatting (leading/trailing spaces) across 51,290 records suggests lack of input validation controls.
+        </div>
+      </div>
+      <div class="finding medium">
+        <div><span class="finding-badge badge-medium">MEDIUM</span></div>
+        <div class="finding-text">
+          <strong>F-04: Segment-Level Access Control</strong>
+          Consumer, Corporate, and Home Office segments share the same data store with no visible segregation evidence in the dataset.
+        </div>
+      </div>
+      <div class="finding medium">
+        <div><span class="finding-badge badge-medium">MEDIUM</span></div>
+        <div class="finding-text">
+          <strong>F-05: Furniture Profitability Risk</strong>
+          Furniture category generates $4.1M in sales but only $286K profit (7% margin vs 11.62% average) — pricing controls may be inadequate.
+        </div>
+      </div>
+    </div>
+
+    <div class="audit-card">
+      <h4>✅ Audit Control Checklist</h4>
+      <table>
+        <thead><tr><th>Control Area</th><th>Status</th><th>Risk</th></tr></thead>
+        <tbody>
+          <tr><td><span class="status-dot dot-red"></span>Discount Approval Workflow</td><td>Not Implemented</td><td>Critical</td></tr>
+          <tr><td><span class="status-dot dot-red"></span>Profit Floor Validation</td><td>Not Implemented</td><td>High</td></tr>
+          <tr><td><span class="status-dot dot-amber"></span>Data Input Sanitisation</td><td>Partial</td><td>High</td></tr>
+          <tr><td><span class="status-dot dot-amber"></span>Segment Data Segregation</td><td>Partial</td><td>Medium</td></tr>
+          <tr><td><span class="status-dot dot-green"></span>Order ID Uniqueness</td><td>Implemented</td><td>Low</td></tr>
+          <tr><td><span class="status-dot dot-green"></span>Category Classification</td><td>Implemented</td><td>Low</td></tr>
+          <tr><td><span class="status-dot dot-green"></span>Region/Market Mapping</td><td>Implemented</td><td>Low</td></tr>
+          <tr><td><span class="status-dot dot-amber"></span>Shipping Cost Controls</td><td>Partial</td><td>Medium</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Profit Margin by Category Table -->
+  <div class="card" style="margin-bottom:16px">
+    <h3>📋 Category Profitability Summary — Audit Evidence Table</h3>
+    <table>
+      <thead>
+        <tr><th>Category</th><th>Total Sales</th><th>Total Profit</th><th>Profit Margin</th><th>Orders</th><th>Audit Observation</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Technology</td><td>$4,744,691</td><td>$663,779</td><td>14.0%</td><td>10,141</td><td><span class="status-dot dot-green"></span>Healthy margin — within expected range</td></tr>
+        <tr><td>Office Supplies</td><td>$3,787,330</td><td>$518,474</td><td>13.7%</td><td>31,273</td><td><span class="status-dot dot-green"></span>High volume, consistent performance</td></tr>
+        <tr><td>Furniture</td><td>$4,110,884</td><td>$286,782</td><td>7.0%</td><td>9,876</td><td><span class="status-dot dot-red"></span>Below-average margin — pricing review needed</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card" style="margin-bottom:16px">
+    <h3>📅 Year-over-Year Growth Summary</h3>
+    <table>
+      <thead>
+        <tr><th>Year</th><th>Sales</th><th>Profit</th><th>Margin</th><th>YoY Sales Growth</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>2011</td><td>$2,259,511</td><td>$248,941</td><td>11.02%</td><td>— (Base Year)</td></tr>
+        <tr><td>2012</td><td>$2,677,493</td><td>$307,415</td><td>11.48%</td><td>+18.5%</td></tr>
+        <tr><td>2013</td><td>$3,405,860</td><td>$408,513</td><td>11.99%</td><td>+27.2%</td></tr>
+        <tr><td>2014</td><td>$4,300,041</td><td>$504,166</td><td>11.72%</td><td>+26.3%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<footer>IT Audit Dashboard — SuperStore Orders Dataset | Generated for Academic Submission | Course: Data Analytics & IT Audit</footer>
+
+<script>
+// Year Chart
+new Chart(document.getElementById('yearChart'), {
+  type: 'bar',
+  data: {
+    labels: ['2011','2012','2013','2014'],
+    datasets: [
+      { label: 'Sales ($)', data: [2259511,2677493,3405860,4300041], backgroundColor: '#2563b0', yAxisID: 'y' },
+      { label: 'Profit ($)', data: [248941,307415,408513,504166], backgroundColor: '#16a34a', yAxisID: 'y' }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: true, position: 'top', labels: { font: { size: 11 } } } },
+    scales: {
+      y: { ticks: { callback: v => '$' + (v/1000000).toFixed(1) + 'M', font: { size: 10 } }, grid: { color: '#f0f2f5' } },
+      x: { ticks: { font: { size: 11 } }, grid: { display: false } }
+    }
+  }
+});
+
+// Category Doughnut
+new Chart(document.getElementById('catChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Technology ($4.74M)','Furniture ($4.11M)','Office Supplies ($3.79M)'],
+    datasets: [{ data: [4744691,4110884,3787330], backgroundColor: ['#2563b0','#d97706','#16a34a'], borderWidth: 2, borderColor: '#fff' }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 10 } } }
+  }
+});
+
+// Region Bar
+new Chart(document.getElementById('regionChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Central','South','North','Oceania','SE Asia'],
+    datasets: [{ label: 'Sales', data: [2822399,1600960,1248192,1100207,884438], backgroundColor: ['#2563b0','#3b82f6','#60a5fa','#93c5fd','#bfdbfe'] }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { callback: v => '$'+(v/1000000).toFixed(1)+'M', font:{size:10} }, grid:{color:'#f0f2f5'} },
+      y: { ticks: { font:{size:11} }, grid:{display:false} }
+    }
+  }
+});
+
+// Discount Doughnut
+new Chart(document.getElementById('discountChart'), {
+  type: 'pie',
+  data: {
+    labels: ['No Discount (29,009)','Low 1–20% (10,953)','Medium 21–40% (4,367)','High >40% (6,961)'],
+    datasets: [{ data: [29009,10953,4367,6961], backgroundColor: ['#16a34a','#2563b0','#d97706','#dc2626'], borderWidth: 2, borderColor: '#fff' }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom', labels: { font:{size:10}, padding: 8 } } }
+  }
+});
+
+// Priority Chart
+new Chart(document.getElementById('priorityChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Medium (29,433)','High (15,501)','Critical (3,932)','Low (2,424)'],
+    datasets: [{ data: [29433,15501,3932,2424], backgroundColor: ['#2563b0','#d97706','#dc2626','#6b7280'], borderWidth: 2, borderColor:'#fff' }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom', labels: { font:{size:10}, padding: 8 } } }
+  }
+});
+</script>
+</body>
+</html>
